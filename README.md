@@ -2,13 +2,13 @@
 
 > **📌 Note for Reviewers & Readers**
 > 
-> To protect intellectual property and comply with the double-blind peer review policy, this repository currently serves as an **Inference-Only Demo**. The purpose of this release is to allow reviewers and researchers to verify the predictive behavior, architectural composition, and decoupled calibration mechanism of the proposed PTEF framework without compromising anonymity.
+> To protect intellectual property and ensure methodological transparency during the peer-review process, this repository currently serves as an **Inference and Protocol Verification Demo**. 
+>
+> The purpose of this release is to allow reviewers to directly verify:
+> 1. The predictive behavior and architectural composition of the decoupled calibration mechanism.
+> 2. The strictness of our dataset partitioning protocol (addressing content-disjoint concerns).
 > 
-> Upon formal acceptance of the manuscript, the complete open-source repository will be released, including:
-> - the full training pipeline,
-> - automated multi-seed evaluation scripts,
-> - dataset partitioning logs,
-> - and the complete set of pre-trained weights.
+> Upon formal acceptance of the manuscript, the complete open-source repository will be released, including the full end-to-end training pipeline, automated multi-seed evaluation scripts, and the complete set of pre-trained weights for all evaluated datasets.
 
 ---
 
@@ -33,9 +33,9 @@ SCSA employs cross-layer self-distillation to mitigate representation drift betw
 
 ## 🏆 Evaluation Protocol & Experimental Rigor
 
-The evaluation protocol described in the manuscript is designed to ensure reproducibility, statistical stability, and fair comparison against prior methods.
+The evaluation protocol described in the manuscript is strictly implemented to ensure reproducibility, statistical stability, and fair comparison. 
 
-- **Content-Disjoint Split:** For synthetic IQA datasets, data partitioning follows reference-image-level separation to avoid content leakage between training and testing subsets.
+- **Content-Disjoint Split (Verification Provided):** For synthetic IQA datasets, data partitioning strictly follows reference-image-level separation to avoid content leakage. Reviewers can verify this mechanism in the provided `data/` directory (e.g., the reference ID extraction logic `dis[1:3]` in `tid2013.py`). As a representative example, the exact label file (`tid2013_label.txt`) for TID2013 is included.
 - **Multi-Seed Evaluation:** All reported performances are averaged over multiple independent runs with different random seeds to reduce statistical fluctuation.
 - **Protocol-Consistent Reproduction:** Baseline methods were reproduced under the identical five-crop evaluation protocol and consistent data partition settings.
 
@@ -46,6 +46,18 @@ The evaluation protocol described in the manuscript is designed to ensure reprod
 ```text
 PTEF_Demo_Code/
 ├── checkpoints/                  # Directory for downloaded .pt weights
+│   ├── ptef_tid2013_A+B.pt       # Phase I weights (Ablation verification)
+│   └── ptef_tid2013_A+B+C.pt     # Full PTEF weights (Final prediction)
+├── data/                         # Data loading & splitting protocols
+│   ├── csiq/
+│   │   └── csiq.py               # Strict reference-level split logic
+│   ├── kadid10k/
+│   │   └── kadid10k.py           
+│   ├── live/
+│   │   └── live.py               
+│   └── tid2013/
+│       ├── tid2013.py            
+│       └── tid2013_label.txt     # Representative label file for reference splits
 ├── models/
 │   ├── maniqa.py                 # Core decoupled architecture
 │   └── swin.py                   # Swin backbone integrated with HPSM & SCSA
@@ -75,9 +87,13 @@ Due to GitHub file size limitations, representative pre-trained weights are host
 * **Download Link / 下载链接:** [Baidu Netdisk (百度网盘)](https://pan.baidu.com/s/1_pkRnvpVR32h-QZqEkkuJg?pwd=1234)
 * **Extraction Code / 提取码:** `1234`
 
-Please download and place `ptef_tid2013_A+B+C.pt` inside the `./checkpoints/` directory.
+*(Note: Please replace the dummy link above with your actual Baidu Netdisk link before publishing).*
+
+Please download and place `ptef_tid2013_A+B.pt` and `ptef_tid2013_A+B+C.pt` inside the `./checkpoints/` directory.
 
 ### 3. Run Inference
+
+You can verify the final model performance (A+B+C) using the following command:
 
 ```bash
 python predict_one_image.py \
